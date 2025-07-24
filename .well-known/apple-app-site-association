@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "ZTF9RXQ59K.com.care.offers",
+           "paths": ["/offer/*"] 
+      }
+    ]
+  }
+}

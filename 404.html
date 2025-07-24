@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting to App</title>
+  <meta name="apple-itunes-app" content="app-id=YOUR_APP_STORE_ID">
+  <script>
+    // Prevent infinite loops by checking if we've already tried redirecting
+    const hasTriedRedirect = sessionStorage.getItem('hasTriedRedirect');
+    
+    // Check if URL contains "/offer/"
+    const shouldRedirect = window.location.pathname.includes('/offer/');
+
+    if (shouldRedirect && !hasTriedRedirect) {
+      // Mark that we've tried redirecting to prevent loops
+      sessionStorage.setItem('hasTriedRedirect', 'true');
+      
+      // Extract offer ID from URL
+      const pathSegments = window.location.pathname.split('/');
+      const offerId = pathSegments[pathSegments.length - 1];
+      
+      // Check user agent
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      
+      if (isAndroid) {
+        // Try Android Intent directly (skip the universal link that causes the loop)
+        window.location.href = `intent://tadjeddine-bnh.github.io/carelineDeepLinking/offer/${offerId}#Intent;scheme=https;package=com.care.offers;S.browser_fallback_url=https://play.google.com/store/apps/details?id=com.care.offers;end`;
+        
+      } else if (isIOS) {
+        // Try custom scheme first
+        const customSchemeUrl = `careoffers://offer/${offerId}`;
+        
+        // Create invisible iframe to try custom scheme
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = customSchemeUrl;
+        document.body.appendChild(iframe);
+        
+        // Fallback to App Store after delay
+        setTimeout(function() {
+          window.location.href = "https://apps.apple.com/sa";
+        }, 2500);
+        
+      } else {
+        // Desktop fallback
+        window.location.href = `https://carelin.sa`;
+      }
+    } else if (hasTriedRedirect) {
+      // We've already tried redirecting, show manual options
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('status').innerHTML = `
+          <p>Unable to open the app automatically.</p>
+          <p><a href="https://play.google.com/store/apps/details?id=com.care.offers" style="background: #4285f4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Download from Play Store</a></p>
+          <p><small>Or visit <a href="https://carelin.sa">carelin.sa</a></small></p>
+        `;
+      });
+    } else {
+      // Not a deep link
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('status').innerHTML = `
+          <p>Welcome! This appears to be a regular page visit.</p>
+          <p><a href="https://carelin.sa">Visit carelin.sa</a></p>
+        `;
+      });
+    }
+    
+    // Clear the flag after some time to allow future attempts
+    setTimeout(function() {
+      sessionStorage.removeItem('hasTriedRedirect');
+    }, 10000);
+  </script>
+</head>
+<body>
+  <div id="status">
+    <p>Redirecting to app...</p>
+    <p><small>If the app doesn't open, please wait...</small></p>
+  </div>
+</body>
+</html>

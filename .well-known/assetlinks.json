@@ -1,0 +1,11 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.care.offers",
+    "sha256_cert_fingerprints": [
+      "90:F8:07:E7:DD:7A:43:87:95:F5:54:3B:60:6F:3D:52:CB:2E:85:09:90:61:4B:02:39:6C:03:F9:18:64:2C:0D"
+      
+    ]
+  }
+}]
