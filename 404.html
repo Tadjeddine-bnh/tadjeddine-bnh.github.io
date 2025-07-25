@@ -5,16 +5,10 @@
   <title>Redirecting to App</title>
   <meta name="apple-itunes-app" content="app-id=YOUR_APP_STORE_ID">
   <script>
-    // Prevent infinite loops by checking if we've already tried redirecting
-    const hasTriedRedirect = sessionStorage.getItem('hasTriedRedirect');
-    
     // Check if URL contains "/offer/"
     const shouldRedirect = window.location.pathname.includes('/offer/');
 
-    if (shouldRedirect && !hasTriedRedirect) {
-      // Mark that we've tried redirecting to prevent loops
-      sessionStorage.setItem('hasTriedRedirect', 'true');
-      
+    if (shouldRedirect) {
       // Extract offer ID from URL
       const pathSegments = window.location.pathname.split('/');
       const offerId = pathSegments[pathSegments.length - 1];
@@ -24,57 +18,52 @@
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       
       if (isAndroid) {
-        // Try Android Intent directly (skip the universal link that causes the loop)
-        window.location.href = `intent://tadjeddine-bnh.github.io/offer/${offerId}#Intent;scheme=https;package=com.care.offers;S.browser_fallback_url=https://play.google.com/store/apps/details?id=com.care.offers;end`;
+        // Android Intent
+        window.location.href = `intent://https://tadjeddine-bnh.github.io/offer/${offerId}#Intent;scheme=https;package=com.care.offers;end`;
+        
+        setTimeout(function() {
+          window.location.href = "https://play.google.com/store/apps";
+        }, 2000);
         
       } else if (isIOS) {
-        // Try custom scheme first
-        const customSchemeUrl = `careoffers://offer/${offerId}`;
+        // For iOS, try custom scheme first, then universal link
+        let attempted = false;
         
-        // Create invisible iframe to try custom scheme
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = customSchemeUrl;
-        document.body.appendChild(iframe);
+        // Try custom scheme
+        const customSchemeUrl = `com.care.offers://https://tadjeddine-bnh.github.io/offer/${offerId}`;
+        window.location.href = customSchemeUrl;
         
-        // Fallback to App Store after delay
+        // If custom scheme fails, try universal link
         setTimeout(function() {
-          window.location.href = "https://apps.apple.com/sa";
-        }, 2500);
+          if (!attempted) {
+            attempted = true;
+            window.location.href = `https://tadjeddine-bnh.github.io/offer/${offerId}`;
+          }
+        }, 500);
+        
+        // Fallback to App Store after longer delay
+        setTimeout(function() {
+          if (!attempted) {
+            window.location.href = "https://apps.apple.com/sa"; // Replace with your actual App Store link
+          }
+        }, 3000);
         
       } else {
-        // Desktop fallback
+        // Desktop fallback (if needed)
         window.location.href = `https://carelin.sa`;
       }
-    } else if (hasTriedRedirect) {
-      // We've already tried redirecting, show manual options
-      document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('status').innerHTML = `
-          <p>Unable to open the app automatically.</p>
-          <p><a href="https://play.google.com/store/apps/details?id=com.care.offers" style="background: #4285f4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Download from Play Store</a></p>
-          <p><small>Or visit <a href="https://carelin.sa">carelin.sa</a></small></p>
-        `;
-      });
     } else {
-      // Not a deep link
-      document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('status').innerHTML = `
-          <p>Welcome! This appears to be a regular page visit.</p>
-          <p><a href="https://carelin.sa">Visit carelin.sa</a></p>
-        `;
-      });
+      // If URL doesn't contain "/offer/", do nothing or redirect to a default page
+      console.log("Not a deep link - staying on page or redirecting to home");
+      // Optionally redirect to home:
+      // window.location.href = "https://carelin.sa";
     }
-    
-    // Clear the flag after some time to allow future attempts
-    setTimeout(function() {
-      sessionStorage.removeItem('hasTriedRedirect');
-    }, 10000);
   </script>
 </head>
 <body>
-  <div id="status">
-    <p>Redirecting to app...</p>
-    <p><small>If the app doesn't open, please wait...</small></p>
-  </div>
+  <p>
+    Redirecting to app...<br>
+    <small>If the app doesn't open, <a href="https://carelin.sa">click here</a></small>
+  </p>
 </body>
 </html>
