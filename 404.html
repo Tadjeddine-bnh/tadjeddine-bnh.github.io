@@ -25,7 +25,7 @@
       
       if (isAndroid) {
         // Try Android Intent directly (skip the universal link that causes the loop)
-        window.location.href = `intent://tadjeddine-bnh.github.io/carelineDeepLinking/offer/${offerId}#Intent;scheme=https;package=com.care.offers;S.browser_fallback_url=https://play.google.com/store/apps/details?id=com.care.offers;end`;
+        window.location.href = `intent://tadjeddine-bnh.github.io/offer/${offerId}#Intent;scheme=https;package=com.care.offers;S.browser_fallback_url=https://play.google.com/store/apps/details?id=com.care.offers;end`;
         
       } else if (isIOS) {
         // Try custom scheme first
