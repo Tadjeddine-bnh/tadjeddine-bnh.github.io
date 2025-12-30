@@ -2,9 +2,10 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.care.offers",
+    "package_name": "com.talla.app",
     "sha256_cert_fingerprints": [
-      "90:F8:07:E7:DD:7A:43:87:95:F5:54:3B:60:6F:3D:52:CB:2E:85:09:90:61:4B:02:39:6C:03:F9:18:64:2C:0D"
+      "43:4C:86:7C:DF:B6:A2:1C:10:A6:BA:BB:EC:F7:A7:23:A2:FE:7D:08:AA:15:86:0B:06:23:85:48:74:5B:B5:BF",
+      "F9:FC:AE:7E:2F:47:26:68:33:C7:6B:C5:27:62:77:45:FF:1A:34:D7:95:EF:F4:66:91:F8:6C:D2:C9:92:41:3C"
       
     ]
   }
