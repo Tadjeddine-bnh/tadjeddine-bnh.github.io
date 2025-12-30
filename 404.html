@@ -3,67 +3,59 @@
 <head>
   <meta charset="utf-8">
   <title>Redirecting to App</title>
-  <meta name="apple-itunes-app" content="app-id=YOUR_APP_STORE_ID">
+  <meta name="apple-itunes-app" content="app-id=6749378647">
   <script>
-    // Check if URL contains "/offer/"
-    const shouldRedirect = window.location.pathname.includes('/offer/');
+    const shouldRedirect = window.location.pathname.includes('/service/');
 
     if (shouldRedirect) {
-      // Extract offer ID from URL
       const pathSegments = window.location.pathname.split('/');
       const offerId = pathSegments[pathSegments.length - 1];
       
-      // Check user agent
       const isAndroid = /Android/i.test(navigator.userAgent);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       
       if (isAndroid) {
-        // Android Intent
-        window.location.href = `intent://https://tadjeddine-bnh.github.io/offer/${offerId}#Intent;scheme=https;package=com.care.offers;end`;
+        // Android App Link (keeps scheme=https because it's an intent parameter)
+        window.location.href = `intent://talla.sa/service/${offerId}#Intent;scheme=https;package=com.talla.app;end`;
         
         setTimeout(function() {
-          window.location.href = "https://play.google.com/store/apps";
+          window.location.href = "https://play.google.com/store/apps/details?id=com.talla.app";
         }, 2000);
         
       } else if (isIOS) {
-        // For iOS, try custom scheme first, then universal link
         let attempted = false;
         
-        // Try custom scheme
-        const customSchemeUrl = `com.care.offers://https://tadjeddine-bnh.github.io/offer/${offerId}`;
+        // iOS Custom Scheme (NO nested https://)
+        const customSchemeUrl = `com.talla.app://service/${offerId}`;
         window.location.href = customSchemeUrl;
         
-        // If custom scheme fails, try universal link
+        // Fallback to Universal Link
         setTimeout(function() {
           if (!attempted) {
             attempted = true;
-            window.location.href = `https://tadjeddine-bnh.github.io/offer/${offerId}`;
+            window.location.href = `https://talla.sa/service/${offerId}`;
           }
         }, 500);
         
-        // Fallback to App Store after longer delay
+        // Final fallback to App Store
         setTimeout(function() {
           if (!attempted) {
-            window.location.href = "https://apps.apple.com/sa"; // Replace with your actual App Store link
+            window.location.href = "https://apps.apple.com/sa/app/talla-%D8%B7%D9%84%D8%A9/id6749378647";
           }
         }, 3000);
         
       } else {
-        // Desktop fallback (if needed)
-        window.location.href = `https://carelin.sa`;
+        window.location.href = `https://talla.sa`;
       }
     } else {
-      // If URL doesn't contain "/offer/", do nothing or redirect to a default page
-      console.log("Not a deep link - staying on page or redirecting to home");
-      // Optionally redirect to home:
-      // window.location.href = "https://carelin.sa";
+      window.location.href = "https://talla.sa";
     }
   </script>
 </head>
 <body>
   <p>
     Redirecting to app...<br>
-    <small>If the app doesn't open, <a href="https://carelin.sa">click here</a></small>
+    <small>If the app doesn't open, <a href="https://talla.sa">click here</a></small>
   </p>
 </body>
 </html>
