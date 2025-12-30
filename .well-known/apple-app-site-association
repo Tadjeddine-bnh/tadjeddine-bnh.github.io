@@ -3,8 +3,8 @@
     "apps": [],
     "details": [
       {
-        "appID": "ZTF9RXQ59K.com.care.offers",
-           "paths": ["/offer/*"] 
+        "appID": "38V57V82WY.com.talla.app",
+           "paths": ["/service/*"] 
       }
     ]
   }
