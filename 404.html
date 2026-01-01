@@ -5,47 +5,38 @@
   <title>Redirecting to App</title>
   <meta name="apple-itunes-app" content="app-id=6749378647">
   <script>
-    const shouldRedirect = window.location.pathname.includes('/service/');
-
-    if (shouldRedirect) {
-      const pathSegments = window.location.pathname.split('/');
-      const offerId = pathSegments[pathSegments.length - 1];
+    const path = window.location.pathname;
+    const isServiceLink = path.includes('/service/');
+    const isClinicLink = path.includes('/clinic/');
+    
+    if (isServiceLink || isClinicLink) {
+      const pathSegments = path.split('/');
+      const id = pathSegments[pathSegments.length - 1];
+      const type = isServiceLink ? 'service' : 'clinic';
       
       const isAndroid = /Android/i.test(navigator.userAgent);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       
-      if (isAndroid) {
-        // Android App Link (keeps scheme=https because it's an intent parameter)
-        window.location.href = `intent://tadjeddine-bnh.github.io/service/${offerId}#Intent;scheme=https;package=com.talla.app;end`;
+      // The app link URL
+      const appUrl = `https://tadjeddine-bnh.github.io/${type}/${id}`;
+      
+      if (isAndroid || isIOS) {
+        // Redirect to HTTPS URL - App Links/Universal Links handle it
+        window.location.href = appUrl;
         
+        // Fallback to store if app doesn't open
         setTimeout(function() {
-          window.location.href = "https://play.google.com/store/apps/details?id=com.talla.app";
-        }, 2000);
-        
-      } else if (isIOS) {
-        let attempted = false;
-        
-        // iOS Custom Scheme (NO nested https://)
-        const customSchemeUrl = `com.talla.app://service/${offerId}`;
-        window.location.href = customSchemeUrl;
-        
-        // Fallback to Universal Link
-        setTimeout(function() {
-          if (!attempted) {
-            attempted = true;
-            window.location.href = `https://tadjeddine-bnh.github.io/service/${offerId}`;
+          if (document.hidden === false) {
+            if (isAndroid) {
+              window.location.href = "https://play.google.com/store/apps/details?id=com.talla.app";
+            } else if (isIOS) {
+              window.location.href = "https://apps.apple.com/sa/app/talla-%D8%B7%D9%84%D8%A9/id6749378647";
+            }
           }
-        }, 500);
-        
-        // Final fallback to App Store
-        setTimeout(function() {
-          if (!attempted) {
-            window.location.href = "https://apps.apple.com/sa/app/talla-%D8%B7%D9%84%D8%A9/id6749378647";
-          }
-        }, 3000);
+        }, 2500);
         
       } else {
-        window.location.href = `https://talla.sa`;
+        window.location.href = "https://talla.sa";
       }
     } else {
       window.location.href = "https://talla.sa";
@@ -59,3 +50,6 @@
   </p>
 </body>
 </html>
+```
+
+https://tadjeddine-bnh.github.io/anything-else
